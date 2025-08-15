@@ -6,7 +6,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -36,13 +36,13 @@ public class CodeEditorController {
         if(!user.contains(userName))
             user.add(userName);
         users.put(roomId,user);
-        System.out.println(users.get(roomId));
+        System.out.println(users.get(roomId) +"room "+roomId +"state changed");
         messagingTemplate.convertAndSend("/topic/room/users/" + roomId, users.get(roomId));
         return users.getOrDefault(roomId,new ArrayList<>());
     }
     @MessageMapping("room/{roomId}/del/{userId}")
     public void delete(@DestinationVariable String roomId, @DestinationVariable String userId) {
-        System.out.println("deletd");
+        System.out.println("user : " + userId +" left room : " + roomId);
         users.get(roomId).remove(userId);
         if(users.get(roomId).isEmpty()){
             users.remove(roomId);
@@ -61,4 +61,10 @@ public class CodeEditorController {
         latest.setContent(current);
         messagingTemplate.convertAndSend("/topic/room/" + roomId, latest);
     }
+
+    @PostMapping("/delete/{roomId}/{userId}")
+    public void deleteRequest(@PathVariable String roomId,@PathVariable String userId) {
+        delete(roomId,userId);
+    }
+
 }
