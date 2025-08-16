@@ -15,8 +15,7 @@ pipeline{
             steps{
                 dir("target"){
                     sh '''
-                        cp code-collab.jar /home/collider-backend/
-                        cd /home/collider-backend/
+                        cp code-collab.jar /home/azureuser/
                        '''
                 }
             }
