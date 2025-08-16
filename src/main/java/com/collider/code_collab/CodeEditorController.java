@@ -8,6 +8,10 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -15,6 +19,7 @@ import java.util.Map;
 
 @Controller
 @AllArgsConstructor
+@CrossOrigin("*")
 public class CodeEditorController {
 
     SimpMessagingTemplate messagingTemplate;
@@ -65,6 +70,16 @@ public class CodeEditorController {
     @PostMapping("/delete/{roomId}/{userId}")
     public void deleteRequest(@PathVariable String roomId,@PathVariable String userId) {
         delete(roomId,userId);
+    }
+    @PostMapping("/feedback")
+    @ResponseBody
+    public void fileWrite(@RequestBody FeedBack feedBack) throws FileNotFoundException {
+        PrintStream ps = System.out;
+        System.setOut(new PrintStream(new FileOutputStream("feedback.txt",true)));
+        System.out.println(LocalDateTime.now());
+        System.out.println(feedBack.getMessage());
+        System.out.println();
+        System.setOut(ps);
     }
 
 }
